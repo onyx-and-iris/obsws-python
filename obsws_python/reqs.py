@@ -481,7 +481,7 @@ class ReqClient:
         :type record_directory: str
         """
         payload = {
-            "record_directory": record_directory,
+            "recordDirectory": record_directory,
         }
         return self.send("SetRecordDirectory", payload)
 
