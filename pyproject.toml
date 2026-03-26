@@ -9,13 +9,8 @@ description = "A Python SDK for OBS Studio WebSocket v5.0"
 readme = "README.md"
 license = { text = "GPL-3.0-only" }
 requires-python = ">=3.9"
-authors = [
-    { name = "Adem Atikturk", email = "aatikturk@gmail.com" },
-]
-dependencies = [
-    "tomli >= 2.0.1;python_version < '3.11'",
-    "websocket-client",
-]
+authors = [{ name = "Adem Atikturk", email = "aatikturk@gmail.com" }]
+dependencies = ["tomli >= 2.0.1;python_version < '3.11'", "websocket-client"]
 
 [project.urls]
 Homepage = "https://github.com/aatikturk/obsws-python"
@@ -24,9 +19,10 @@ Homepage = "https://github.com/aatikturk/obsws-python"
 path = "obsws_python/version.py"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/obsws_python",
-]
+include = ["/obsws_python"]
+
+[tool.hatch.env]
+requires = ["hatch-dotenv"]
 
 [tool.hatch.envs.default]
 dependencies = ["pre-commit"]
@@ -42,6 +38,11 @@ scene_rotate = "python {root}\\examples\\scene_rotate\\."
 
 [tool.hatch.envs.hatch-test]
 randomize = true
+env-include = ["OBSWS_TEST_*"]
+
+[tool.hatch.env.collectors.dotenv.hatch-test]
+env-files = [".env"]
+fail-on-missing = true
 
 [tool.hatch.envs.hatch-test.scripts]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
@@ -51,20 +52,11 @@ python = ["313", "312", "311", "310", "39"]
 
 [tool.hatch.envs.style]
 detached = true
-dependencies = [
-    "black",
-    "isort",
-]
+dependencies = ["black", "isort"]
 
 [tool.hatch.envs.style.scripts]
-check = [
-    "black --check --diff .",
-    "isort --check-only --diff .",
-]
-fmt = [
-    "isort .",
-    "black .",
-]
+check = ["black --check --diff .", "isort --check-only --diff ."]
+fmt = ["isort .", "black ."]
 
 [tool.black]
 line-length = 88

@@ -56,3 +56,4 @@ config.toml
 obsws.log
 
 .vscode/
+tools/

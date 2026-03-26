@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+  default:
+    desc: Generate ReqClient methods from the API spec
+    deps: [generate]
+
+  generate:
+    desc: Generate ReqClient methods from the API spec
+    deps: [pull-protocol-json]
+    cmds:
+      - python tools/generate.py
+      - hatch run style:fmt
+    internal: true
+
+  pull-protocol-json:
+    desc: Pull the latest API spec from the obs-websocket repository
+    preconditions:
+      - sh: '[ ! -f tools/protocol.json ] || [ "$(find tools/protocol.json -mmin +1440)" ]'
+        msg: 'The protocol.json file is up to date (last modified less than 24 hours ago).'
+    cmds:
+      - curl -sSfL -o tools/protocol.json "https://raw.githubusercontent.com/obsproject/obs-websocket/refs/heads/master/docs/generated/protocol.json"
+    internal: true

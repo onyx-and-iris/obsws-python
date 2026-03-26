@@ -11,8 +11,8 @@ class TestRequests:
         assert hasattr(resp, "obs_version")
         assert hasattr(resp, "obs_web_socket_version")
 
-    def test_get_hot_key_list(self):
-        resp = req_cl.get_hot_key_list()
+    def test_get_hotkey_list(self):
+        resp = req_cl.get_hotkey_list()
         assert resp.hotkeys
         assert any(x.startswith("OBSBasic.") for x in resp.hotkeys)
 
@@ -24,16 +24,20 @@ class TestRequests:
         ],
     )
     def test_persistent_data(self, name, data):
-        req_cl.set_persistent_data("OBS_WEBSOCKET_DATA_REALM_PROFILE", name, data)
-        resp = req_cl.get_persistent_data("OBS_WEBSOCKET_DATA_REALM_PROFILE", name)
+        req_cl.set_persistent_data(
+            realm="OBS_WEBSOCKET_DATA_REALM_PROFILE", slot_name=name, slot_value=data
+        )
+        resp = req_cl.get_persistent_data(
+            realm="OBS_WEBSOCKET_DATA_REALM_PROFILE", slot_name=name
+        )
         assert resp.slot_value == data
 
     @pytest.mark.skip(reason="possible bug in obs-websocket, needs checking")
     def test_profile_list(self):
-        req_cl.create_profile("test")
+        req_cl.create_profile(profile_name="test")
         resp = req_cl.get_profile_list()
         assert "test" in resp.profiles
-        req_cl.remove_profile("test")
+        req_cl.remove_profile(profile_name="test")
         resp = req_cl.get_profile_list()
         assert "test" not in resp.profiles
 
@@ -43,8 +47,8 @@ class TestRequests:
             "key": "live_myvery_secretkey",
         }
         req_cl.set_stream_service_settings(
-            "rtmp_common",
-            settings,
+            stream_service_type="rtmp_common",
+            stream_service_settings=settings,
         )
         resp = req_cl.get_stream_service_settings()
         assert resp.stream_service_type == "rtmp_common"
@@ -62,13 +66,17 @@ class TestRequests:
         ],
     )
     def test_current_program_scene(self, scene):
-        req_cl.set_current_program_scene(scene)
+        req_cl.set_current_program_scene(scene_name=scene)
         resp = req_cl.get_current_program_scene()
         assert resp.current_program_scene_name == scene
 
     def test_input_list(self):
         req_cl.create_input(
-            "START_TEST", "test", "color_source_v3", {"color": 4294945535}, True
+            scene_name="START_TEST",
+            input_name="test",
+            input_kind="color_source_v3",
+            input_settings={"color": 4294945535},
+            scene_item_enabled=True,
         )
         resp = req_cl.get_input_list()
         for input_item in resp.inputs:
@@ -80,14 +88,18 @@ class TestRequests:
             # This else block is executed if the for loop completes without finding the input_item with inputName "test"
             raise AssertionError("Input with inputName 'test' not found")
 
-        resp = req_cl.get_input_settings("test")
+        resp = req_cl.get_input_settings(input_name="test")
         assert resp.input_kind == "color_source_v3"
         assert resp.input_settings == {"color": 4294945535}
-        req_cl.remove_input("test")
+        req_cl.remove_input(input_name="test")
 
     def test_source_filter(self):
-        req_cl.create_source_filter("START_TEST", "test", "color_key_filter_v2")
-        resp = req_cl.get_source_filter_list("START_TEST")
+        req_cl.create_source_filter(
+            source_name="START_TEST",
+            filter_name="test",
+            filter_kind="color_key_filter_v2",
+        )
+        resp = req_cl.get_source_filter_list(source_name="START_TEST")
         assert resp.filters == [
             {
                 "filterEnabled": True,
@@ -97,7 +109,7 @@ class TestRequests:
                 "filterSettings": {},
             }
         ]
-        req_cl.remove_source_filter("START_TEST", "test")
+        req_cl.remove_source_filter(source_name="START_TEST", filter_name="test")
 
     @pytest.mark.parametrize(
         "state",
@@ -107,6 +119,6 @@ class TestRequests:
         ],
     )
     def test_studio_mode_enabled(self, state):
-        req_cl.set_studio_mode_enabled(state)
+        req_cl.set_studio_mode_enabled(studio_mode_enabled=state)
         resp = req_cl.get_studio_mode_enabled()
         assert resp.studio_mode_enabled == state
