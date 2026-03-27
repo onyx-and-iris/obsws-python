@@ -1,3 +1,4 @@
+import os
 from enum import IntEnum
 from math import log
 
@@ -34,8 +35,15 @@ def on_input_volume_meters(data):
 
 
 def main():
+    host = os.getenv("OBSWS_HOST", "localhost")
+    port = int(os.getenv("OBSWS_PORT", 4455))
+    password = os.getenv("OBSWS_PASSWORD", "")
+
     with obs.EventClient(
-        subs=(obs.Subs.LOW_VOLUME | obs.Subs.INPUTVOLUMEMETERS)
+        host=host,
+        port=port,
+        password=password,
+        subs=(obs.Subs.LOW_VOLUME | obs.Subs.INPUTVOLUMEMETERS),
     ) as client:
         client.callback.register([on_input_volume_meters, on_input_mute_state_changed])
 

@@ -1,11 +1,13 @@
-import time
+import os
+from threading import Event
 
 import obsws_python as obs
 
 
 class Observer:
-    def __init__(self):
-        self._client = obs.EventClient()
+    def __init__(self, host, port, password, stop_event):
+        self._client = obs.EventClient(host=host, port=port, password=password)
+        self._stop_event = stop_event
         self._client.callback.register(
             [
                 self.on_current_program_scene_changed,
@@ -15,7 +17,6 @@ class Observer:
             ]
         )
         print(f"Registered events: {self._client.callback.get()}")
-        self.running = True
 
     def __enter__(self):
         return self
@@ -38,10 +39,15 @@ class Observer:
     def on_exit_started(self, _):
         """OBS has begun the shutdown process."""
         print("OBS closing!")
-        self.running = False
+        self._stop_event.set()
 
 
 if __name__ == "__main__":
-    with Observer() as observer:
-        while observer.running:
-            time.sleep(0.1)
+    host = os.getenv("OBSWS_HOST", "localhost")
+    port = int(os.getenv("OBSWS_PORT", 4455))
+    password = os.getenv("OBSWS_PASSWORD", "")
+
+    stop_event = Event()
+
+    with Observer(host, port, password, stop_event) as observer:
+        stop_event.wait()

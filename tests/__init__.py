@@ -3,9 +3,9 @@ import os
 import obsws_python as obs
 
 req_cl = obs.ReqClient(
-    host=os.getenv("OBSWS_TEST_HOST", "localhost"),
-    port=int(os.getenv("OBSWS_TEST_PORT", 4455)),
-    password=os.getenv("OBSWS_TEST_PASSWORD", ""),
+    host=os.getenv("OBSWS_HOST", "localhost"),
+    port=int(os.getenv("OBSWS_PORT", 4455)),
+    password=os.getenv("OBSWS_PASSWORD", ""),
 )
 
 

@@ -11,8 +11,8 @@ class TestErrors:
 
     def test_it_raises_an_obssdk_error_on_incorrect_password(self):
         bad_conn = {
-            "host": os.getenv("OBSWS_TEST_HOST", "localhost"),
-            "port": int(os.getenv("OBSWS_TEST_PORT", 4455)),
+            "host": os.getenv("OBSWS_HOST", "localhost"),
+            "port": int(os.getenv("OBSWS_PORT", 4455)),
             "password": "incorrectpassword",
         }
         with pytest.raises(
@@ -23,8 +23,8 @@ class TestErrors:
 
     def test_it_raises_an_obssdk_error_if_auth_enabled_but_no_password_provided(self):
         bad_conn = {
-            "host": os.getenv("OBSWS_TEST_HOST", "localhost"),
-            "port": int(os.getenv("OBSWS_TEST_PORT", 4455)),
+            "host": os.getenv("OBSWS_HOST", "localhost"),
+            "port": int(os.getenv("OBSWS_PORT", 4455)),
             "password": "",
         }
         with pytest.raises(

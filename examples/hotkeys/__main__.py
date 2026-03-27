@@ -1,13 +1,14 @@
 import inspect
+import os
 
-import keyboard
+import keyboard  # type: ignore
 
 import obsws_python as obs
 
 
 class Observer:
-    def __init__(self):
-        self._client = obs.EventClient()
+    def __init__(self, host, port, password):
+        self._client = obs.EventClient(host=host, port=port, password=password)
         self._client.callback.register(self.on_current_program_scene_changed)
         print(f"Registered events: {self._client.callback.get()}")
 
@@ -34,12 +35,16 @@ def version():
 
 
 def set_scene(scene, *args):
-    req_client.set_current_program_scene(scene)
+    req_client.set_current_program_scene(scene_name=scene)
 
 
 if __name__ == "__main__":
-    with obs.ReqClient() as req_client:
-        with Observer() as observer:
+    host = os.getenv("OBSWS_HOST", "localhost")
+    port = int(os.getenv("OBSWS_PORT", 4455))
+    password = os.getenv("OBSWS_PASSWORD", "")
+
+    with obs.ReqClient(host=host, port=port, password=password) as req_client:
+        with Observer(host, port, password) as observer:
             keyboard.add_hotkey("0", version)
             keyboard.add_hotkey("1", set_scene, args=("START",))
             keyboard.add_hotkey("2", set_scene, args=("BRB",))

@@ -24,25 +24,30 @@ include = ["/obsws_python"]
 [tool.hatch.env]
 requires = ["hatch-dotenv"]
 
+[tool.hatch.env.collectors.dotenv.e]
+env-files = [".env"]
+fail-on-missing = true
+
+[tool.hatch.env.collectors.dotenv.hatch-test]
+env-files = [".env"]
+fail-on-missing = true
+
 [tool.hatch.envs.default]
 dependencies = ["pre-commit"]
 
 [tool.hatch.envs.e]
 dependencies = ["keyboard"]
+env-include = ["OBSWS_*"]
 
 [tool.hatch.envs.e.scripts]
-events = "python {root}\\examples\\events\\."
-hotkeys = "python {root}\\examples\\hotkeys\\."
-levels = "python {root}\\examples\\levels\\."
-scene_rotate = "python {root}\\examples\\scene_rotate\\."
+events = "python -m examples.events"
+hotkeys = "python -m examples.hotkeys"
+levels = "python -m examples.levels"
+scene-rotate = "python -m examples.scene_rotate"
 
 [tool.hatch.envs.hatch-test]
 randomize = true
-env-include = ["OBSWS_TEST_*"]
-
-[tool.hatch.env.collectors.dotenv.hatch-test]
-env-files = [".env"]
-fail-on-missing = true
+env-include = ["OBSWS_*"]
 
 [tool.hatch.envs.hatch-test.scripts]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
