@@ -37,7 +37,7 @@ dependencies = ["pre-commit"]
 
 [tool.hatch.envs.e]
 dependencies = ["keyboard"]
-env-include = ["OBSWS_*"]
+# env-include = ["OBSWS_*"] # causes issues on Windows.
 
 [tool.hatch.envs.e.scripts]
 events = "python -m examples.events"
@@ -47,7 +47,7 @@ scene-rotate = "python -m examples.scene_rotate"
 
 [tool.hatch.envs.hatch-test]
 randomize = true
-env-include = ["OBSWS_*"]
+# env-include = ["OBSWS_*"] # causes issues on Windows.
 
 [tool.hatch.envs.hatch-test.scripts]
 run = "pytest{env:HATCH_TEST_ARGS:} {args}"
