@@ -26,11 +26,11 @@ requires = ["hatch-dotenv"]
 
 [tool.hatch.env.collectors.dotenv.e]
 env-files = [".env"]
-fail-on-missing = true
+# fail-on-missing = true # breaks publish workflow
 
 [tool.hatch.env.collectors.dotenv.hatch-test]
 env-files = [".env"]
-fail-on-missing = true
+# fail-on-missing = true # breaks publish workflow
 
 [tool.hatch.envs.default]
 dependencies = ["pre-commit"]
